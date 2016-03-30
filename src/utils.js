@@ -20,8 +20,8 @@ export const getRTCPeerConnection = (server, cb) => {
 }
 export const findById = (i) => document.getElementById(i)
 export const playUserMedia = (vElem, constraints, cb) => getUserMedia(
-    constraints,
-    stream => {
-      const url = URL.createObjectURL(stream)
-      vElem.src = url
-    }, err => console.error(err))
+  constraints,
+  stream => {
+    const url = URL.createObjectURL(stream)
+    vElem.src = url
+  }, err => console.error(err))

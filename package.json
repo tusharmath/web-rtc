@@ -17,7 +17,9 @@
     "babel-preset-react": "^6.5.0",
     "lodash": "^4.6.1",
     "react": "^0.14.8",
+    "react-announce-connect": "^1.0.0",
     "react-dom": "^0.14.8",
+    "react-render-if": "^0.2.1",
     "rx": "^4.1.0",
     "webpack": "^1.12.14"
   },

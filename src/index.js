@@ -1,8 +1,5 @@
-import * as U from './utils'
-const localPlayer = U.findById('local-player')
-const remotePlayer = U.findById('remote-player')
+import ReactDom from 'react-dom'
+import React from 'react'
+import Main from './components/Main'
 
-U
-  .getUserMedia({audio: false, video: true})
-  .map(URL.createObjectURL)
-  .subscribe(x => localPlayer.src = x)
+ReactDom.render(<Main/>, document.getElementById('content'))
