@@ -1,27 +1,29 @@
+'use strict';
 import * as Rx from 'rx'
-
-export const getUserMedia = (constraints) => {
-  const _getUserMedia = ((navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia).bind(navigator))
-  return Rx.Observable.create(observer => {
-    _getUserMedia(
-      constraints,
-      (i) => observer.onNext(i),
-      err => observer.onError(err)
-    )
+export const RTCPeerConnection = webkitRTCPeerConnection
+export const ObservableFromWeb = (funct) => (...args) => Rx
+  .Observable
+  .create((observer) => {
+    funct.apply(null, args.concat([
+      (x) => {
+        observer.onNext(x)
+        observer.onCompleted()
+      },
+      (x) => observer.onError(x)
+    ]))
   })
 
-}
-export const getRTCPeerConnection = (server, cb) => {
-  const conn = new webkitRTCPeerConnection(server)
-  return Rx.Observable.create(observer => {
-    conn.onicecandidate = (...args) => observer.onNext({event: 'ICE_CANDIDATE', args})
-    conn.onaddstream = (...args) => observer.onNext({event: 'ADD_STREAM', args})
-  })
-}
-export const findById = (i) => document.getElementById(i)
-export const playUserMedia = (vElem, constraints, cb) => getUserMedia(
-  constraints,
-  stream => {
-    const url = URL.createObjectURL(stream)
-    vElem.src = url
-  }, err => console.error(err))
+export const getUserMedia = (constraints) => ObservableFromWeb(
+  (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia).bind(navigator)
+)(constraints)
+
+export const getRTCPeerConnection = (server) => Rx.Observable
+  .create((observer) => {
+    const conn = new RTCPeerConnection(server)
+    setImmediate(() => observer.onNext({event: 'CREATE', params: conn}))
+    conn.onicecandidate = (params) => observer.onNext({event: 'ICE', params})
+    conn.onaddstream = (params) => observer.onNext({event: 'STREAM', params})
+  }).share()
+
+export const createOffer = (connection) => ObservableFromWeb(connection.createOffer.bind(connection))()
+export const createAnswer = (connection) => ObservableFromWeb(connection.createAnswer.bind(connection))()
