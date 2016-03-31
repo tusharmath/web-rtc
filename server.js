@@ -14,7 +14,6 @@ const webpackConfig = require('./webpack.config')
 const ssl = require('./ssl')
 
 ssl.subscribe((options) => {
-  console.log(options)
   const app = express()
   if (config.useWebpackDevMiddleware) {
     app.use(webpackMiddleware(webpack(webpackConfig)))
