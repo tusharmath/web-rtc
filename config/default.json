@@ -1,0 +1,4 @@
+{
+	"useWebpackDevMiddleware": true,
+	"port": 8080
+}
