@@ -31,7 +31,6 @@ Rx.Observable.merge(
   LocalICE.zip(RemoteConnectionValue, targ('ice', 'conn')),
   RemoteICE.zip(LocalConnectionValue, targ('ice', 'conn'))
   )
-  .tap(x => console.log(x))
   .subscribe((x) => x.conn.addIceCandidate(new RTCIceCandidate(x.ice.candidate)))
 
 /**
@@ -39,9 +38,9 @@ Rx.Observable.merge(
  */
 export const LocalDescriptor = LocalMediaStream
   .withLatestFrom(LocalConnectionValue, targ('stream', 'connection'))
+
   .tap((x) => x.connection.addStream(x.stream))
   .flatMap((x) => U.createOffer(x.connection))
-
 /**
  * Create Answer
  */
