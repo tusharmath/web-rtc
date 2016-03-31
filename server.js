@@ -11,11 +11,16 @@ const webpack = require('webpack')
 const webpackMiddleware = require('webpack-dev-middleware')
 
 const webpackConfig = require('./webpack.config')
+const ssl = require('./ssl')
 
-const app = express()
-if (config.useWebpackDevMiddleware) {
+ssl.subscribe((options) => {
+  console.log(options)
+  const app = express()
+  if (config.useWebpackDevMiddleware) {
+    app.use(webpackMiddleware(webpack(webpackConfig)))
+  }
   app.use(webpackMiddleware(webpack(webpackConfig)))
-}
-app.use(webpackMiddleware(webpack(webpackConfig)))
-app.use('/', express.static(path.resolve(__dirname, 'public')))
-https.createServer(app).listen(config.port, () => console.log('STARTED:', config.port, process.env.NODE_ENV))
+  app.use('/', express.static(path.resolve(__dirname, 'public')))
+  https.createServer(options, app).listen(config.port, () => console.log('STARTED:', config.port, process.env.NODE_ENV))
+})
+
