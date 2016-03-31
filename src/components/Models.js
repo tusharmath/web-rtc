@@ -4,7 +4,7 @@
 
 'use strict'
 
-import * as U from '../utils'
+import * as U from '../lib/utils'
 import targ from 'argtoob'
 import * as Rx from 'rx'
 
@@ -50,14 +50,11 @@ export const RemoteDescriptor = LocalDescriptor
     x.localConn.setLocalDescription(x.desc)
     x.remoteConn.setRemoteDescription(x.desc)
   })
-
   .flatMap((x) => U.createAnswer(x.remoteConn))
 
 RemoteDescriptor
   .withLatestFrom(LocalConnectionValue, RemoteConnectionValue, targ('desc', 'localConn', 'remoteConn'))
-
-  .tap((x) => {
+  .subscribe((x) => {
     x.localConn.setRemoteDescription(x.desc)
     x.remoteConn.setLocalDescription(x.desc)
   })
-  .subscribe((x) => console.log('Done'))
