@@ -4,7 +4,7 @@
 
 'use strict'
 
-import * as U from '../lib/RTCUtils'
+import * as U from '../lib/WebRTC'
 import targ from 'argtoob'
 import * as Rx from 'rx'
 
