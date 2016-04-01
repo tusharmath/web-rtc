@@ -5,20 +5,8 @@
 'use strict'
 
 const Rx = require('rx')
-const config = require('config')
-const https = require('https')
-const socketIO = require('socket.io')
+const e = exports
+const Connection = new Rx.BehaviorSubject({event: 'init', params: []})
+e.connect = Connection
 
-const ssl = require('../../ssl/index')
-const U = require('./Utils')
-const app = require('./../WebApp')
-
-const connection = ssl
-  .map((options) => https.createServer(options, app))
-  .map((https) => ({https, ws: socketIO(https)}))
-  .flatMap((x) => Rx.Observable.fromCallback(x.https.listen, x.https)(config.port).map(x.ws))
-  .tap((x) => console.log('STARTED:', config.port, process.env.NODE_ENV))
-  .flatMap((x) => U.fromEvent(x, 'connection'))
-  .share()
-
-exports.messages = Rx.Observable.merge(connection, connection.flatMap((x) => U.fromEvent(x.params[0], 'message')))
+Connection.subscribe(x => console.log(x.params[0]))
