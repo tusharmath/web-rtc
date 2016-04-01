@@ -4,6 +4,6 @@
 
 'use strict'
 
-const socket = require('./src/server').messages
+const socket = require('./src/lib/SocketServer').messages
 
 socket.subscribe((x) => console.log(x.event))

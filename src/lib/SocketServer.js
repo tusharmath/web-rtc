@@ -9,9 +9,9 @@ const config = require('config')
 const https = require('https')
 const socketIO = require('socket.io')
 
-const ssl = require('../ssl/index')
-const U = require('./lib/Utils')
-const app = require('./WebApp')
+const ssl = require('../../ssl/index')
+const U = require('./Utils')
+const app = require('./../WebApp')
 
 const connection = ssl
   .map((options) => https.createServer(options, app))
@@ -21,6 +21,4 @@ const connection = ssl
   .flatMap((x) => U.fromEvent(x, 'connection'))
   .share()
 
-const messages = connection.flatMap((x) => U.fromEvent(x.params[0], 'message'))
-
-exports.messages = Rx.Observable.merge(connection, messages)
+exports.messages = Rx.Observable.merge(connection, connection.flatMap((x) => U.fromEvent(x.params[0], 'message')))
